@@ -1,0 +1,38 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE BillOfMaterials;
+
+CREATE TABLE BillOfMaterials
+	(
+		BillOfMaterialsID VARCHAR(200),
+		ProductAssemblyID INTEGER,
+		ComponentID INTEGER,
+		StartDate TIMESTAMP(3),
+		EndDate TIMESTAMP(3),
+		UnitMeasureCode CHAR(200),
+		BOMLevel INTEGER,
+		PerAssemblyQty INTEGER,
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BillOfMaterialsID);
+
+DELETE FROM DP_LDR.BillOfMaterials;		
+INSERT INTO DP_LDR.BillOfMaterials
+SELECT
+	CASE WHEN BillOfMaterialsID = 'NULL' THEN 'N/A' ELSE BillOfMaterialsID END,
+	CASE WHEN ProductAssemblyID = 'NULL' THEN -1 ELSE CAST(ProductAssemblyID AS INTEGER) END,
+	CASE WHEN ComponentID = 'NULL' THEN -1 ELSE CAST(ComponentID AS INTEGER) END,
+	CASE WHEN StartDate = 'NULL' THEN NULL ELSE CAST(StartDate AS TIMESTAMP(3)) END,
+	CASE WHEN EndDate = 'NULL' THEN NULL ELSE CAST(EndDate AS TIMESTAMP(3)) END,
+	CASE WHEN UnitMeasureCode = 'NULL' THEN 'N/A' ELSE CAST(UnitMeasureCode AS CHAR(200)) END,
+	CASE WHEN BOMLevel = 'NULL' THEN -1 ELSE CAST(BOMLevel AS INTEGER) END,
+	CASE WHEN PerAssemblyQty = 'NULL' THEN -1 ELSE CAST(PerAssemblyQty AS INTEGER) END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS TIMESTAMP(3)) END
+FROM DP_STG.Bill_Of_Materials_Production;		
+
+
+.LOGOFF
+.QUIT
