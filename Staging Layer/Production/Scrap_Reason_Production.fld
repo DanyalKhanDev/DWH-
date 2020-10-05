@@ -1,0 +1,65 @@
+
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_STG;
+.set record vartext ",";
+
+
+DROP TABLE	SCRAP_REASON_PRODUCTION;
+DROP TABLE SCRAP_REASON_PRODUCTION_ERROR1;
+DROP TABLE SCRAP_REASON_PRODUCTION_ERROR2; 
+
+CREATE SET TABLE SCRAP_REASON_PRODUCTION ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+
+ScrapReasonID	VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+Name   VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate        VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC
+
+	 )
+	PRIMARY INDEX SCRAP_REASON_PRODUCTION (ScrapReasonID);
+
+RECORD 2;
+
+DEFINE
+
+ScrapReasonID	(VARCHAR(200))
+Name   			(VARCHAR(200))
+ModifiedDate    (VARCHAR(200))
+
+FILE="E:\Peronal\Machine Learning\Machine Learning\DICE Analytics\DWH Project\Adventure Works Data Set\Adventure Works Data Set\Production\ScrapReason_Production.CSV";
+
+begin loading
+SCRAP_REASON_PRODUCTION
+errorfiles
+SCRAP_REASON_PRODUCTION_ERROR1
+,SCRAP_REASON_PRODUCTION_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into SCRAP_REASON_PRODUCTION (
+
+ScrapReasonID	,
+Name   			,
+ModifiedDate           
+ 
+)
+
+values
+
+(
+:ScrapReasonID	,
+:Name   			,
+:ModifiedDate    
+       
+);
+
+
+end loading;
+
+.LOGOFF; 
+	

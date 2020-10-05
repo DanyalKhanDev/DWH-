@@ -1,0 +1,102 @@
+
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_STG;
+.set record vartext ",";
+
+
+DROP TABLE	WORK_ORDER_ROUTING_PRODUCTION;
+DROP TABLE WORK_ORDER_ROUTING_PRODUCTION_ERROR1;
+DROP TABLE WORK_ORDER_ROUTING_PRODUCTION_ERROR2; 
+
+CREATE SET TABLE WORK_ORDER_ROUTING_PRODUCTION ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+
+WorkOrderID			VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ProductID           VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+OperationSequence   VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+LocationID          VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ScheduledStartDate  VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ScheduledEndDate    VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ActualStartDate     VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ActualEndDate       VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ActualResourceHrs   VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+PlannedCost         VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ActualCost          VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate        VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC
+
+	 )
+	PRIMARY INDEX WORK_ORDER_ROUTING_PRODUCTION (WorkOrderID);
+
+RECORD 2;
+
+DEFINE
+
+WorkOrderID			(VARCHAR(200))
+ProductID           (VARCHAR(200))
+OperationSequence   (VARCHAR(200))
+LocationID          (VARCHAR(200))
+ScheduledStartDate  (VARCHAR(200))
+ScheduledEndDate    (VARCHAR(200))
+ActualStartDate     (VARCHAR(200))
+ActualEndDate       (VARCHAR(200))
+ActualResourceHrs   (VARCHAR(200))
+PlannedCost         (VARCHAR(200))
+ActualCost          (VARCHAR(200))
+ModifiedDate        (VARCHAR(200))
+
+
+FILE="E:\Peronal\Machine Learning\Machine Learning\DICE Analytics\DWH Project\Adventure Works Data Set\Adventure Works Data Set\Production\WorkOrderRouting_Production.CSV";
+
+begin loading
+WORK_ORDER_ROUTING_PRODUCTION
+errorfiles
+WORK_ORDER_ROUTING_PRODUCTION_ERROR1
+,WORK_ORDER_ROUTING_PRODUCTION_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into WORK_ORDER_ROUTING_PRODUCTION (
+
+WorkOrderID			,
+ProductID           ,
+OperationSequence   ,
+LocationID          ,
+ScheduledStartDate  ,
+ScheduledEndDate    ,
+ActualStartDate     ,
+ActualEndDate       ,
+ActualResourceHrs   ,
+PlannedCost         ,
+ActualCost          ,
+ModifiedDate                  
+ 
+)
+
+values
+
+(
+
+:WorkOrderID			,
+:ProductID           ,
+:OperationSequence   ,
+:LocationID          ,
+:ScheduledStartDate  ,
+:ScheduledEndDate    ,
+:ActualStartDate     ,
+:ActualEndDate       ,
+:ActualResourceHrs   ,
+:PlannedCost         ,
+:ActualCost          ,
+:ModifiedDate           
+);
+
+
+end loading;
+
+.LOGOFF; 
+	

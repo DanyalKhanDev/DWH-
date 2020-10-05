@@ -1,0 +1,89 @@
+
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_STG;
+.set record vartext ",";
+
+
+DROP TABLE	BILL_OF_MATERIALS_PRODUCTION;
+DROP TABLE BILL_OF_MATERIALS_PRODUCTION_ERROR1;
+DROP TABLE BILL_OF_MATERIALS_PRODUCTION_ERROR2; 
+
+CREATE SET TABLE BILL_OF_MATERIALS_PRODUCTION ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL
+	 (
+
+BillOfMaterialsID	VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ProductAssemblyID   VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ComponentID         VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+StartDate           VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+EndDate             VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+UnitMeasureCode     VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+BOMLevel            VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+PerAssemblyQty      VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+ModifiedDate        VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC
+
+	 )
+	PRIMARY INDEX BILL_OF_MATERIALS_PRODUCTION (BillOfMaterialsID);
+
+RECORD 2;
+
+DEFINE
+
+BillOfMaterialsID	(VARCHAR(200))
+ProductAssemblyID   (VARCHAR(200))
+ComponentID         (VARCHAR(200))
+StartDate           (VARCHAR(200))
+EndDate             (VARCHAR(200))
+UnitMeasureCode     (VARCHAR(200))
+BOMLevel            (VARCHAR(200))
+PerAssemblyQty      (VARCHAR(200))
+ModifiedDate        (VARCHAR(200))
+
+FILE="E:\Peronal\Machine Learning\Machine Learning\DICE Analytics\DWH Project\Adventure Works Data Set\Adventure Works Data Set\Production\BillOfMaterials_Production.CSV";
+
+begin loading
+BILL_OF_MATERIALS_PRODUCTION
+errorfiles
+BILL_OF_MATERIALS_PRODUCTION_ERROR1
+,BILL_OF_MATERIALS_PRODUCTION_ERROR2
+
+
+CHECKPOINT 400000;
+
+insert into BILL_OF_MATERIALS_PRODUCTION (
+
+BillOfMaterialsID	,
+ProductAssemblyID   ,
+ComponentID         ,
+StartDate           ,
+EndDate             ,
+UnitMeasureCode     ,
+BOMLevel            ,
+PerAssemblyQty      ,
+ModifiedDate        
+ 
+)
+
+values
+
+(
+
+:BillOfMaterialsID	,
+:ProductAssemblyID   ,
+:ComponentID         ,
+:StartDate           ,
+:EndDate             ,
+:UnitMeasureCode     ,
+:BOMLevel            ,
+:PerAssemblyQty      ,
+:ModifiedDate        
+);
+
+
+end loading;
+
+.LOGOFF; 
+	
