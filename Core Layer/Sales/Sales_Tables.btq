@@ -1,0 +1,275 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_core;
+
+DROP TABLE SalesTerritory;
+
+CREATE TABLE SalesTerritory
+	(
+		TerritoryID INTEGER,
+		Name VARCHAR(200),
+		CountryRegionCode CHAR(200),
+		GroupName VARCHAR(200),
+		SalesYTD DECIMAL(10,3),
+		SalesLastYear INTEGER,
+		CostYTD DECIMAL(10,3),
+		CostLastYear INTEGER,
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(TerritoryID);
+
+DROP TABLE SalesTaxRate;
+
+CREATE TABLE SalesTaxRate
+	(
+		SalesTaxRateID VARCHAR(200),
+		StateProvinceID INTEGER,
+		TaxType INTEGER,
+		TaxRate DECIMAL(4,2),
+		Name VARCHAR(200),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(SalesTaxRateID);
+
+
+DROP TABLE SalesReason;
+
+CREATE TABLE SalesReason
+	(
+		SalesReasonID VARCHAR(200),
+		Name VARCHAR(200),
+		ReasonType VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)    
+		
+	)
+		PRIMARY INDEX(SalesReasonID);
+
+
+DROP TABLE SalesPersonQuotaHistory;
+
+CREATE TABLE SalesPersonQuotaHistory
+	(
+		BusinessEntityID VARCHAR(200) ,
+		QuotaDate TIMESTAMP(3),
+		SalesQuota INTEGER,
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BusinessEntityID);
+
+DROP TABLE SalesPerson;
+
+CREATE TABLE SalesPerson
+	(
+		BusinessEntityID VARCHAR(200),
+		TerritoryID INTEGER,
+		SalesQuota INTEGER,
+		Bonus INTEGER,
+		CommissionPct DECIMAL(4,2),
+		SalesYTD DECIMAL(10,3),
+		SalesLastYear INTEGER,
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BusinessEntityID);
+		
+		
+DROP TABLE SalesOrderHeaderSalesReason;
+
+CREATE TABLE SalesOrderHeaderSalesReason
+	(
+		BusinessEntityID VARCHAR(200),
+		SalesOrderID	INTEGER,
+		SalesReasonID	VARCHAR(200),
+		ModifiedDate      TIMESTAMP(3)    
+		
+	)
+		PRIMARY INDEX(SalesOrderID);
+
+
+DROP TABLE SalesOrderHeader;
+
+CREATE TABLE SalesOrderHeader
+	(
+		BusinessEntityID VARCHAR(200),
+		SalesOrder1		VARCHAR(200),
+		ShipMethodID     INTEGER,
+		RevisionNumber   INTEGER,
+		OrderDate       TIMESTAMP(3),
+		DueDate	        TIMESTAMP(3),
+		ShipDate          TIMESTAMP(3),
+		Status	           INTEGER    ,
+		OnlineOrder			INTEGER   ,
+		SalesOrder2			VARCHAR(200)   ,
+		PurchaseOrderNumber	 VARCHAR(200)  ,
+		AccountNumber       VARCHAR(200)   ,
+		TerritoryID		INTEGER   ,
+		BillToAddressID		INTEGER   ,
+		ShipToAddressID	     INTEGER  ,
+		CreditCardID      INTEGER   ,
+		CreditCardApprovalCode VARCHAR(200),
+		CurrencyRateID   INTEGER    ,
+		SubTotal         DECIMAL(10,5)      ,
+		TaxAmt           DECIMAL(10,5)      ,
+		Freight           DECIMAL(10,5)     ,
+		TotalDue           DECIMAL(10,5)    ,
+		Comments           VARCHAR(200)    ,
+		rowguid1           VARCHAR(200)    ,
+		ModifiedDate      TIMESTAMP(3)    
+		
+	)
+		PRIMARY INDEX(SalesOrder1);
+
+DROP TABLE SalesOrderDetail;
+
+CREATE TABLE SalesOrderDetail
+	(
+		BusinessEntityID VARCHAR(200),
+		SalesOrderID	INTEGER ,
+		SalesOrderDetailID	INTEGER ,
+		CarrierTrackingNumber	VARCHAR(200) ,
+		OrderQty	INTEGER ,
+		ProductID	INTEGER ,
+		SpecialOfferID	INTEGER ,
+		UnitPrice	Decimal(10,5) ,
+		UnitPriceDiscount	Decimal(10,5) ,
+		LineTotal	Decimal(10,5) ,
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(SalesOrderID);
+		
+DROP TABLE PersonCreditCard;
+
+CREATE TABLE PersonCreditCard
+	(
+		BusinessEntityID VARCHAR(200),
+		CreditCardID INTEGER,
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CreditCardID);
+
+DROP TABLE Customer;
+
+CREATE TABLE Customer
+	(
+		CustomerID VARCHAR(200),
+		PersonID INTEGER,
+		StoreID INTEGER,
+		TerritoryID INTEGER,
+		AccountNumber VARCHAR(200),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CustomerID);
+
+DROP TABLE CurrencyRate;
+
+CREATE TABLE CurrencyRate
+	(
+		CurrencyRateID INTEGER,
+		CurrencyRateDate TIMESTAMP(3),
+		FromCurrencyCode VARCHAR(200),
+		ToCurrencyCode VARCHAR(200),
+		AverageRate INTEGER
+	)
+		PRIMARY INDEX(CurrencyRateID);
+
+DROP TABLE Currency;
+
+CREATE TABLE Currency
+	(
+		CurrencyCode VARCHAR(200),
+		Name VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CurrencyCode);
+
+DROP TABLE CreditCard;
+
+CREATE TABLE CreditCard
+	(
+		CreditCardID INTEGER,
+		CardType CHAR(200),
+		CardNumber VARCHAR(200),
+		ExpMonth INTEGER,
+		ExpYear INTEGER,
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CreditCardID);
+
+DROP TABLE Store;
+
+CREATE TABLE Store
+	(
+		BusinessEntityID VARCHAR(200),
+		Name VARCHAR(200),
+		Demographics VARCHAR(200),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BusinessEntityID);
+
+
+DROP TABLE SpecialOfferProduct;
+
+CREATE TABLE SpecialOfferProduct
+	(
+		SpecialOfferID	INTEGER ,
+		ProductID		INTEGER ,	
+		rowguid			VARCHAR(200),
+		ModifiedDate 	TIMESTAMP(3) 
+	)
+		PRIMARY INDEX(SpecialOfferID);
+
+DROP TABLE SpecialOffer;
+
+CREATE TABLE SpecialOffer
+	(
+		SpecialOfferID	INTEGER ,
+		Description		VARCHAR(200) ,	
+		DiscountPct		Decimal(10,5) ,
+		TypeName 			CHAR(200) ,
+		Category		CHAR(200) ,
+		StartDate		TIMESTAMP(3) ,
+		EndDate			TIMESTAMP(3) ,
+		MinQty			VARCHAR(200) ,
+		MaxQty			VARCHAR(200) ,
+		rowguid			VARCHAR(200),
+		ModifiedDate 	TIMESTAMP(3) 
+	)
+		PRIMARY INDEX(SpecialOfferID);		
+		
+DROP TABLE ShoppingCartItem;
+
+CREATE TABLE ShoppingCartItem
+	(
+		ShoppingCartItemID VARCHAR(200),
+		ShoppingCartID INTEGER,
+		Quantity INTEGER,
+		ProductID INTEGER,
+		DateCreated TIMESTAMP(3),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ShoppingCartItemID);
+
+
+DROP TABLE SalesTerritoryHistory;
+
+CREATE TABLE SalesTerritoryHistory
+	(
+		BusinessEntityID VARCHAR(200) ,
+		TerritoryID INTEGER,
+		StartDate TIMESTAMP(3),
+		EndDate TIMESTAMP(3),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BusinessEntityID);
+		
+.LOGOFF
+.QUIT		
+		

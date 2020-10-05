@@ -1,0 +1,42 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_core;
+
+
+DROP TABLE SalesOrderHeader;
+
+CREATE TABLE SalesOrderHeader
+	(
+		BusinessEntityID VARCHAR(200),
+		SalesOrderID1		VARCHAR(200),
+		ShipMethodID     INTEGER,
+		RevisionNumber   INTEGER,
+		OrderDate       TIMESTAMP(3),
+		DueDate	        TIMESTAMP(3),
+		ShipDate          TIMESTAMP(3),
+		Status	           INTEGER    ,
+		OnlineOrder			INTEGER   ,
+		SalesOrderD2			VARCHAR(200)   ,
+		PurchaseOrderNumber	 VARCHAR(200)  ,
+		AccountNumber       VARCHAR(200)   ,
+		TerritoryID		INTEGER   ,
+		BillToAddressID		INTEGER   ,
+		ShipToAddressID	     INTEGER  ,
+		CreditCardID      INTEGER   ,
+		CreditCardApprovalCode VARCHAR(200),
+		CurrencyRateID   INTEGER    ,
+		SubTotal         DECIMAL(10,5)      ,
+		TaxAmt           DECIMAL(10,5)      ,
+		Freight           DECIMAL(10,5)     ,
+		TotalDue           DECIMAL(10,5)    ,
+		Comments           VARCHAR(200)    ,
+		rowguid1           VARCHAR(200)    ,
+		ModifiedDate      TIMESTAMP(3)    
+		
+	)
+		PRIMARY INDEX(BusinessEntityID);
+		
+		
+.LOGOFF
+.QUIT		
