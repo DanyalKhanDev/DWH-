@@ -1,0 +1,48 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE Document;
+
+CREATE TABLE Document
+	(
+		DocumentNode VARCHAR(200)  ,
+		DocumentLevel VARCHAR(200)   ,
+		TitleName     VARCHAR(200)   ,
+		Owner         VARCHAR(200)   ,
+		FolderFlag    VARCHAR(200)   ,
+		FileName      VARCHAR(200)   ,
+		FileExtension VARCHAR(200)   ,
+		Revision      VARCHAR(200)   ,
+		ChangeNumber   VARCHAR(200)  ,
+		Status         VARCHAR(200)  ,
+		DocumentSummary VARCHAR(200) ,
+		Document     VARCHAR(200)    ,
+		rowguid      VARCHAR(200)   ,
+        ModifiedDate TIMESTAMP(3) 
+	)
+		PRIMARY INDEX(DocumentNode);
+
+DELETE FROM DP_LDR.Document;		
+INSERT INTO DP_LDR.Document
+SELECT
+	CASE WHEN DocumentNode2  = 'NULL' THEN 'N/A' ELSE DocumentNode2 END,
+	CASE WHEN DocumentLevel  = 'NULL' THEN 'N/A' ELSE DocumentLevel END,
+	CASE WHEN TitleName  = 'NULL' THEN 'N/A' ELSE TitleName END,
+	CASE WHEN Owner  = 'NULL' THEN 'N/A' ELSE Owner END,
+	CASE WHEN FolderFlag  = 'NULL' THEN 'N/A' ELSE FolderFlag END,
+	CASE WHEN FileName  = 'NULL' THEN 'N/A' ELSE FileName END,
+	CASE WHEN FileExtension  = 'NULL' THEN 'N/A' ELSE FileExtension END,
+	CASE WHEN Revision  = 'NULL' THEN 'N/A' ELSE Revision END,
+	CASE WHEN ChangeNumber  = 'NULL' THEN 'N/A' ELSE ChangeNumber END,
+	CASE WHEN Status  = 'NULL' THEN 'N/A' ELSE Status END,
+	CASE WHEN DocumentSummary  = 'NULL' THEN 'N/A' ELSE DocumentSummary END,
+	CASE WHEN Document  = 'NULL' THEN 'N/A' ELSE Document END,
+	CASE WHEN rowguid7  = 'NULL' THEN 'N/A' ELSE rowguid7 END,
+	CASE WHEN ModifiedDate17 = 'NULL' THEN NULL ELSE CAST(ModifiedDate17 AS TIMESTAMP(3)) END
+FROM DP_STG.Production;		
+
+
+.LOGOFF
+.QUIT

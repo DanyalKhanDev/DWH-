@@ -1,0 +1,70 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE Product;
+
+CREATE TABLE Product
+	(
+		ProductID INTEGER,
+		Name VARCHAR(200),
+		ProductNumber VARCHAR(200),
+		MakeFlag INTEGER,
+		FinishedGoodsFlag INTEGER,
+		Color VARCHAR(200),
+		SafetyStockLevel INTEGER,
+		ReorderPoint INTEGER,
+		StandardCost1 DECIMAL(10,5),
+		ListPrice1 DECIMAL(10,5),
+		SizeType VARCHAR(200),
+		SizeUnitMeasureCode VARCHAR(200),
+		WeightUnitMeasureCode VARCHAR(200),
+		Weight DECIMAL(10,5),
+		DaysToManufacture INTEGER,
+		ProductLine CHAR(200),
+		ClassType VARCHAR(200),
+		Style CHAR(200),
+		ProductSubcategoryID1 INTEGER,
+		ProductModelID1 INTEGER,
+		SellStartDate TIMESTAMP(3),
+		SellEndDate TIMESTAMP(3),
+		DiscontinuedDate TIMESTAMP(3),
+		rowguid VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(ProductID);
+
+DELETE FROM DP_LDR.Product;		
+INSERT INTO DP_LDR.Product
+SELECT
+	CASE WHEN ProductID2 = 'NULL' THEN -1 ELSE CAST(ProductID2 AS INTEGER) END,
+	CASE WHEN Name1 = 'NULL' THEN 'N/A' ELSE Name1 END,
+	CASE WHEN ProductNumber = 'NULL' THEN 'N/A' ELSE ProductNumber END,
+	CASE WHEN MakeFlag = 'NULL' THEN -1 ELSE CAST(MakeFlag AS INTEGER) END,
+	CASE WHEN FinishedGoodsFlag = 'NULL' THEN -1 ELSE CAST(FinishedGoodsFlag AS INTEGER) END,
+	CASE WHEN Color = 'NULL' THEN 'N/A' ELSE Color END,
+	CASE WHEN SafetyStockLevel = 'NULL' THEN -1 ELSE CAST(SafetyStockLevel AS INTEGER) END,
+	CASE WHEN ReorderPoint = 'NULL' THEN -1 ELSE CAST(ReorderPoint AS INTEGER) END,
+	CASE WHEN StandardCost1 = 'NULL' THEN -1 ELSE CAST(StandardCost1 AS DECIMAL(10,5)) END,
+	CASE WHEN ListPrice1 = 'NULL' THEN -1 ELSE CAST(ListPrice1 AS DECIMAL(10,5)) END,
+	CASE WHEN SizeType = 'NULL' THEN 'N/A' ELSE SizeType END,
+	CASE WHEN SizeUnitMeasureCode = 'NULL' THEN 'N/A' ELSE SizeUnitMeasureCode END,
+	CASE WHEN WeightUnitMeasureCode = 'NULL' THEN 'N/A' ELSE WeightUnitMeasureCode END,
+	CASE WHEN Weight = 'NULL' THEN -1 ELSE CAST(Weight AS DECIMAL(10,5)) END,
+	CASE WHEN DaysToManufacture = 'NULL' THEN -1 ELSE CAST(DaysToManufacture AS INTEGER) END,
+	CASE WHEN ProductLine = 'NULL' THEN 'N/A' ELSE CAST(ProductLine AS CHAR(200)) END,
+	CASE WHEN ClassType = 'NULL' THEN 'N/A' ELSE ClassType END,
+	CASE WHEN Style = 'NULL' THEN 'N/A' ELSE CAST(Style AS CHAR(200)) END,
+	CASE WHEN ProductSubcategoryID1 = 'NULL' THEN -1 ELSE CAST(ProductSubcategoryID1 AS INTEGER) END,
+	CASE WHEN ProductModelID1 = 'NULL' THEN -1 ELSE CAST(ProductModelID1 AS INTEGER) END,
+	CASE WHEN SellStartDate = 'NULL' THEN NULL ELSE CAST(SellStartDate AS TIMESTAMP(3)) END,
+	CASE WHEN SellEndDate = 'NULL' THEN NULL ELSE CAST(SellEndDate AS TIMESTAMP(3)) END,
+	CASE WHEN DiscontinuedDate = 'NULL' THEN NULL ELSE CAST(DiscontinuedDate AS TIMESTAMP(3)) END,
+	CASE WHEN rowguid1 = 'NULL' THEN 'N/A' ELSE rowguid1 END,
+	CASE WHEN ModifiedDate2 = 'NULL' THEN NULL ELSE CAST(ModifiedDate2 AS TIMESTAMP(3)) END
+FROM DP_STG.Production;		
+
+
+.LOGOFF
+.QUIT

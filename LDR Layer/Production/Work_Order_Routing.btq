@@ -1,0 +1,44 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE WorkOrderRouting;
+
+CREATE TABLE WorkOrderRouting
+	(
+		WorkOrderID VARCHAR(200),
+		ProductID INTEGER,
+		OperationSequence INTEGER,
+		LocationID INTEGER,
+		ScheduledStartDate DATE,
+		ScheduledEndDate DATE,
+		ActualStartDate DATE,
+		ActualEndDate DATE,
+		ActualResourceHrs DECIMAL(4,2),
+		PlannedCost DECIMAL(4,2),
+		ActualCost DECIMAL(10,5),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(WorkOrderID);
+
+DELETE FROM DP_LDR.WorkOrderRouting;		
+INSERT INTO DP_LDR.WorkOrderRouting
+SELECT
+	CASE WHEN WorkOrderID = 'NULL' THEN 'N/A' ELSE WorkOrderID END,
+	CASE WHEN ProductID = 'NULL' THEN -1 ELSE CAST(ProductID AS INTEGER) END,
+	CASE WHEN OperationSequence = 'NULL' THEN -1 ELSE CAST(OperationSequence AS INTEGER) END,
+	CASE WHEN LocationID = 'NULL' THEN -1 ELSE CAST(LocationID AS INTEGER) END,
+	CASE WHEN ScheduledStartDate = 'NULL' THEN NULL ELSE CAST(ScheduledStartDate AS DATE) END,
+	CASE WHEN ScheduledEndDate = 'NULL' THEN NULL ELSE CAST(ScheduledEndDate AS DATE) END,
+	CASE WHEN ActualStartDate = 'NULL' THEN NULL ELSE CAST(ActualStartDate AS DATE) END,
+	CASE WHEN ActualEndDate= 'NULL' THEN NULL ELSE CAST(ActualEndDate AS DATE) END,
+	CASE WHEN ActualResourceHrs = 'NULL' THEN -1 ELSE CAST(ActualResourceHrs AS DECIMAL(4,2)) END,
+	CASE WHEN PlannedCost = 'NULL' THEN -1 ELSE CAST(PlannedCost AS DECIMAL(5,3)) END,
+	CASE WHEN ActualCost = 'NULL' THEN -1 ELSE CAST(ActualCost AS DECIMAL(10,5)) END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS DATE) END
+FROM DP_STG.Work_Order_Routing_Production;		
+
+
+.LOGOFF
+.QUIT

@@ -1,0 +1,26 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ScrapReason;
+
+CREATE TABLE ScrapReason
+	(
+		ScrapReasonID VARCHAR(200),
+		Name	VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(ScrapReasonID);
+
+DELETE FROM DP_LDR.ScrapReason;		
+INSERT INTO DP_LDR.ScrapReason
+SELECT
+	CASE WHEN ScrapReasonID = 'NULL' THEN 'N/A' ELSE ScrapReasonID END,
+	CASE WHEN Name = 'NULL' THEN 'N/A' ELSE Name END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS DATE) END
+FROM DP_STG.Scrap_Reason_Production;		
+
+
+.LOGOFF
+.QUIT

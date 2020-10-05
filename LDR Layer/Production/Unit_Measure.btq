@@ -1,0 +1,26 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE UnitMeasure;
+
+CREATE TABLE UnitMeasure
+	(
+		UnitMeasureCode VARCHAR(200),
+		Name	VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(UnitMeasureCode);
+
+DELETE FROM DP_LDR.UnitMeasure;		
+INSERT INTO DP_LDR.UnitMeasure
+SELECT
+	CASE WHEN UnitMeasureCode = 'NULL' THEN 'N/A' ELSE UnitMeasureCode END,
+	CASE WHEN Name = 'NULL' THEN 'N/A' ELSE Name END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS DATE) END
+FROM DP_STG.Unit_Measure_Production;		
+
+
+.LOGOFF
+.QUIT

@@ -1,0 +1,26 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ProductDocument;
+
+CREATE TABLE ProductDocument
+	(
+		ProductID	INTEGER,
+		DocumentNode VARCHAR(200),
+		ModifiedDate	TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);
+
+DELETE FROM DP_LDR.ProductDocument;		
+INSERT INTO DP_LDR.ProductDocument
+SELECT
+	CASE WHEN ProductID7 = 'NULL' THEN -1 ELSE CAST(ProductID7 AS INTEGER) END,
+	CASE WHEN DocumentNode1 = 'NULL' THEN 'N/A' ELSE DocumentNode1 END,
+	CASE WHEN ModifiedDate16 = 'NULL' THEN NULL ELSE CAST(ModifiedDate16 AS TIMESTAMP(3)) END
+FROM DP_STG.PRODUCTION;		
+
+
+.LOGOFF
+.QUIT

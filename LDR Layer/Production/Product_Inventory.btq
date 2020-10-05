@@ -1,0 +1,34 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ProductInventory;
+
+CREATE TABLE ProductInventory
+	(
+		ProductID INTEGER,
+		LocationID INTEGER,
+		Shelf VARCHAR(200),
+		BinNumber INTEGER,
+		Quantity INTEGER,
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);
+
+DELETE FROM DP_LDR.ProductInventory;		
+INSERT INTO DP_LDR.ProductInventory
+SELECT
+	CASE WHEN ProductID4 = 'NULL' THEN -1 ELSE CAST(ProductID4 AS INTEGER) END,
+	CASE WHEN LocationID1 = 'NULL' THEN -1 ELSE CAST(LocationID1 AS INTEGER) END,
+	CASE WHEN Shelf = 'NULL' THEN 'N/A' ELSE Shelf END,
+	CASE WHEN BinNumber = 'NULL' THEN -1 ELSE CAST(BinNumber AS INTEGER) END,
+	CASE WHEN Quantity2 = 'NULL' THEN -1 ELSE CAST(Quantity2 AS INTEGER) END,
+	CASE WHEN rowguid4 = 'NULL' THEN 'N/A' ELSE rowguid4 END,
+	CASE WHEN ModifiedDate6 = 'NULL' THEN NULL ELSE CAST(ModifiedDate6 AS TIMESTAMP(3)) END
+FROM DP_STG.Production;		
+
+
+.LOGOFF
+.QUIT

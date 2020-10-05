@@ -1,0 +1,26 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE Illustration;
+
+CREATE TABLE Illustration
+	(
+		IllustrationID VARCHAR(200),
+		Diagram VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(IllustrationID);
+
+DELETE FROM DP_LDR.Illustration;		
+INSERT INTO DP_LDR.Illustration
+SELECT
+	CASE WHEN IllustrationID2  = 'NULL' THEN 'N/A' ELSE IllustrationID2  END,
+	CASE WHEN Diagram  = 'NULL' THEN 'N/A' ELSE Diagram  END,
+	CASE WHEN ModifiedDate15 = 'NULL' THEN NULL ELSE CAST(ModifiedDate15 AS TIMESTAMP(3)) END
+FROM DP_STG.Production;		
+
+
+.LOGOFF
+.QUIT

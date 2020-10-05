@@ -1,0 +1,38 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE TransactionHistory;
+
+CREATE TABLE TransactionHistory
+	(
+		TransactionID VARCHAR(200) ,
+		ProductID INTEGER,
+		ReferenceOrderID INTEGER,
+		TransactionDate TIMESTAMP(3),
+		TransactionType CHAR(200),
+		Quantity INTEGER,
+		ActualCost DECIMAL(10,5),
+		ModifiedDate TIMESTAMP(3),
+		ReferenceOrderLineID INTEGER
+	)
+		PRIMARY INDEX(TransactionID);
+
+DELETE FROM DP_LDR.TransactionHistory;		
+INSERT INTO DP_LDR.TransactionHistory
+SELECT
+	CASE WHEN TransactionID = 'NULL' THEN 'N/A' ELSE TransactionID END,
+	CASE WHEN ProductID1 = 'NULL' THEN -1 ELSE CAST(ProductID1 AS INTEGER) END,
+	CASE WHEN ReferenceOrderID = 'NULL' THEN -1 ELSE CAST(ReferenceOrderID AS INTEGER) END,
+	CASE WHEN TransactionDate = 'NULL' THEN NULL ELSE CAST(TransactionDate AS TIMESTAMP(3)) END,
+	CASE WHEN TransactionType = 'NULL' THEN 'N/A' ELSE CAST(TransactionType AS CHAR(200)) END,
+	CASE WHEN Quantity1 = 'NULL' THEN -1 ELSE CAST(Quantity1 AS INTEGER) END,
+	CASE WHEN ActualCost = 'NULL' THEN -1 ELSE CAST(ActualCost AS DECIMAL(10,5)) END,
+	CASE WHEN ModifiedDate1 = 'NULL' THEN NULL ELSE CAST(ModifiedDate1 AS TIMESTAMP(3)) END,
+	CASE WHEN ReferenceOrderLineID = 'NULL' THEN -1 ELSE CAST(ReferenceOrderLineID AS INTEGER) END
+FROM DP_STG.PRODUCTION;		
+
+
+.LOGOFF
+.QUIT

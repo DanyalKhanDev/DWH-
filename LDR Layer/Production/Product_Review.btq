@@ -1,0 +1,36 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ProductReview;
+
+CREATE TABLE ProductReview
+	(
+		ProductReviewID VARCHAR(200) ,
+		ProductID INTEGER,
+		ReviewerName CHAR(200),
+		ReviewDate TIMESTAMP(3),
+		EmailAddress VARCHAR(200),
+		Rating INTEGER,
+		Comments VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductReviewID);
+
+DELETE FROM DP_LDR.ProductReview;		
+INSERT INTO DP_LDR.ProductReview
+SELECT
+	CASE WHEN ProductReviewID = 'NULL' THEN 'N/A' ELSE ProductReviewID END,
+	CASE WHEN ProductID3 = 'NULL' THEN -1 ELSE CAST(ProductID3 AS INTEGER) END,
+	CASE WHEN ReviewerName = 'NULL' THEN 'N/A' ELSE CAST(ReviewerName AS CHAR(200)) END,
+	CASE WHEN ReviewDate = 'NULL' THEN NULL ELSE CAST(ReviewDate AS TIMESTAMP(3)) END,
+	CASE WHEN EmailAddress = 'NULL' THEN 'N/A' ELSE EmailAddress END,
+	CASE WHEN Rating = 'NULL' THEN -1 ELSE CAST(Rating AS INTEGER) END,
+	CASE WHEN Comments = 'NULL' THEN 'N/A'  ELSE Comments END,
+	CASE WHEN ModifiedDate3 = 'NULL' THEN NULL ELSE CAST(ModifiedDate3 AS TIMESTAMP(3)) END
+FROM DP_STG.PRODUCTION;		
+
+
+.LOGOFF
+.QUIT

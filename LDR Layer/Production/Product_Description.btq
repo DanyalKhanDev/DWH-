@@ -1,0 +1,28 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ProductDescription;
+
+CREATE TABLE ProductDescription
+	(
+		ProductDescriptionID INTEGER,
+		Description VARCHAR(200),
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductDescriptionID);
+
+DELETE FROM DP_LDR.ProductDescription;		
+INSERT INTO DP_LDR.ProductDescription
+SELECT
+	CASE WHEN ProductDescriptionID2  = 'NULL' THEN -1 ELSE CAST(ProductDescriptionID2 AS INTEGER) END,
+	CASE WHEN Description1  = 'NULL' THEN 'N/A' ELSE Description1  END,
+	CASE WHEN rowguid6  = 'NULL' THEN 'N/A' ELSE rowguid6  END,
+	CASE WHEN ModifiedDate13 = 'NULL' THEN NULL ELSE CAST(ModifiedDate13 AS TIMESTAMP(3)) END
+FROM DP_STG.Production;		
+
+
+.LOGOFF
+.QUIT

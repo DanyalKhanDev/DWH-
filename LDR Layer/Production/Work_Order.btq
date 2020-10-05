@@ -1,0 +1,38 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE WorkOrder;
+
+CREATE TABLE WorkOrder
+	(
+		WorkOrderID VARCHAR(200),
+		ProductID INTEGER,
+		OrderQty INTEGER,
+		StockedQty INTEGER,
+		ScrappedQty INTEGER,
+		EndDate DATE,
+		DueDate DATE,
+		ScrapReasonID VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(WorkOrderID);
+
+DELETE FROM DP_LDR.WorkOrder;		
+INSERT INTO DP_LDR.WorkOrder
+SELECT
+	CASE WHEN WorkOrderID = 'NULL' THEN 'N/A' ELSE WorkOrderID END,
+	CASE WHEN ProductID = 'NULL' THEN -1 ELSE CAST(ProductID AS INTEGER) END,
+	CASE WHEN OrderQty = 'NULL' THEN -1 ELSE CAST(OrderQty AS INTEGER) END,
+	CASE WHEN StockedQty = 'NULL' THEN -1 ELSE CAST(StockedQty AS INTEGER) END,
+	CASE WHEN ScrappedQty = 'NULL' THEN -1 ELSE CAST(ScrappedQty AS INTEGER) END,
+	CASE WHEN EndDate = 'NULL' THEN NULL ELSE CAST(EndDate AS DATE) END,
+	CASE WHEN DueDate = 'NULL' THEN NULL ELSE CAST(DueDate AS DATE) END,
+	CASE WHEN ScrapReasonID = 'NULL' THEN 'N/A' ELSE ScrapReasonID END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS DATE) END
+FROM DP_STG.Work_Order_Production;		
+
+
+.LOGOFF
+.QUIT
