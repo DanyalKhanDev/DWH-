@@ -1,0 +1,331 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_CORE;
+
+DROP TABLE ProductDescription;
+
+CREATE TABLE ProductDescription
+	(
+		ProductDescriptionID INTEGER,
+		Description VARCHAR(200),
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductDescriptionID);
+		
+
+DROP TABLE ProductCostHistory;
+
+CREATE TABLE ProductCostHistory
+	(
+		ProductID	INTEGER,
+		StartDate	TIMESTAMP(3),
+		EndDate		TIMESTAMP(3),
+		StandardCost DECIMAL(10,5),
+		ModifiedDate	TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);
+
+DROP TABLE ProductCategory;
+
+CREATE TABLE ProductCategory
+	(
+		ProductCategoryID INTEGER,
+		Name VARCHAR(200),
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductCategoryID);
+
+DROP TABLE Product;
+
+CREATE TABLE Product
+	(
+		ProductID INTEGER,
+		Name VARCHAR(200),
+		ProductNumber VARCHAR(200),
+		MakeFlag INTEGER,
+		FinishedGoodsFlag INTEGER,
+		Color VARCHAR(200),
+		SafetyStockLevel INTEGER,
+		ReorderPoint INTEGER,
+		StandardCost1 DECIMAL(10,5),
+		ListPrice1 DECIMAL(10,5),
+		SizeType VARCHAR(200),
+		SizeUnitMeasureCode VARCHAR(200),
+		WeightUnitMeasureCode VARCHAR(200),
+		Weight DECIMAL(10,5),
+		DaysToManufacture INTEGER,
+		ProductLine CHAR(200),
+		ClassType VARCHAR(200),
+		Style CHAR(200),
+		ProductSubcategoryID1 INTEGER,
+		ProductModelID1 INTEGER,
+		SellStartDate TIMESTAMP(3),
+		SellEndDate TIMESTAMP(3),
+		DiscontinuedDate TIMESTAMP(3),
+		rowguid VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(ProductID);
+
+DROP TABLE Location;
+
+CREATE TABLE Location
+	(
+		LocationID	INTEGER,
+		Name	VARCHAR(200),
+		CostRate	DECIMAL(10,5),
+		Availability DECIMAL(10,5),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(LocationID);
+
+DROP TABLE Illustration;
+
+CREATE TABLE Illustration
+	(
+		IllustrationID VARCHAR(200),
+		Diagram VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(IllustrationID);
+		
+DROP TABLE Document;
+
+CREATE TABLE Document
+	(
+		DocumentNode VARCHAR(200)  ,
+		DocumentLevel VARCHAR(200)   ,
+		TitleName     VARCHAR(200)   ,
+		Owner         VARCHAR(200)   ,
+		FolderFlag    VARCHAR(200)   ,
+		FileName      VARCHAR(200)   ,
+		FileExtension VARCHAR(200)   ,
+		Revision      VARCHAR(200)   ,
+		ChangeNumber   VARCHAR(200)  ,
+		Status         VARCHAR(200)  ,
+		DocumentSummary VARCHAR(200) ,
+		Document     VARCHAR(200)    ,
+		rowguid      VARCHAR(200)   ,
+        ModifiedDate TIMESTAMP(3) 
+	)
+		PRIMARY INDEX(DocumentNode);
+
+DROP TABLE Culture;
+
+CREATE TABLE Culture
+	(
+		CultureID VARCHAR(200),
+		Name VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CultureID);
+
+DROP TABLE BillOfMaterials;
+
+CREATE TABLE BillOfMaterials
+	(
+		BillOfMaterialsID VARCHAR(200),
+		ProductAssemblyID INTEGER,
+		ComponentID INTEGER,
+		StartDate TIMESTAMP(3),
+		EndDate TIMESTAMP(3),
+		UnitMeasureCode CHAR(200),
+		BOMLevel INTEGER,
+		PerAssemblyQty INTEGER,
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BillOfMaterialsID);
+		
+DROP TABLE WorkOrderRouting;
+
+CREATE TABLE WorkOrderRouting
+	(
+		WorkOrderID VARCHAR(200),
+		ProductID INTEGER,
+		OperationSequence INTEGER,
+		LocationID INTEGER,
+		ScheduledStartDate DATE,
+		ScheduledEndDate DATE,
+		ActualStartDate DATE,
+		ActualEndDate DATE,
+		ActualResourceHrs DECIMAL(4,2),
+		PlannedCost DECIMAL(4,2),
+		ActualCost DECIMAL(10,5),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(WorkOrderID);
+		
+
+DROP TABLE WorkOrder;
+
+CREATE TABLE WorkOrder
+	(
+		WorkOrderID VARCHAR(200),
+		ProductID INTEGER,
+		OrderQty INTEGER,
+		StockedQty INTEGER,
+		ScrappedQty INTEGER,
+		EndDate DATE,
+		DueDate DATE,
+		ScrapReasonID VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(WorkOrderID);
+
+DROP TABLE UnitMeasure;
+
+CREATE TABLE UnitMeasure
+	(
+		UnitMeasureCode VARCHAR(200),
+		Name	VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(UnitMeasureCode);
+
+DROP TABLE TransactionHistoryArchive;
+
+CREATE TABLE TransactionHistoryArchive
+	(
+		TransactionID VARCHAR(200),
+		ProductID INTEGER,
+		ReferenceOrderID INTEGER,
+		TransactionDate TIMESTAMP(3),
+		TransactionType CHAR(200),
+		Quantity INTEGER,
+		ActualCost DECIMAL(10,5), 
+		ModifiedDate TIMESTAMP(3),
+		ReferenceOrderLineID INTEGER
+	)
+		PRIMARY INDEX(TransactionID);
+
+DROP TABLE TransactionHistory;
+
+CREATE TABLE TransactionHistory
+	(
+		TransactionID VARCHAR(200) ,
+		ProductID INTEGER,
+		ReferenceOrderID INTEGER,
+		TransactionDate TIMESTAMP(3),
+		TransactionType CHAR(200),
+		Quantity INTEGER,
+		ActualCost DECIMAL(10,5),
+		ModifiedDate TIMESTAMP(3),
+		ReferenceOrderLineID INTEGER
+	)
+		PRIMARY INDEX(TransactionID);
+
+DROP TABLE ScrapReason;
+
+CREATE TABLE ScrapReason
+	(
+		ScrapReasonID VARCHAR(200),
+		Name	VARCHAR(200),
+		ModifiedDate DATE
+	)
+		PRIMARY INDEX(ScrapReasonID);
+
+DROP TABLE ProductModelIllustration;
+
+CREATE TABLE ProductModelIllustration
+	(
+		ProductModelID INTEGER,
+		IllustrationID VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductModelID);
+
+DROP TABLE ProductSubCategory;
+
+CREATE TABLE ProductSubCategory
+	(
+		ProductSubCategoryID INTEGER,
+		ProductCategoryID INTEGER,
+		Name VARCHAR(200),
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductSubCategoryID);
+
+DROP TABLE ProductReview;
+
+CREATE TABLE ProductReview
+	(
+		ProductReviewID VARCHAR(200) ,
+		ProductID INTEGER,
+		ReviewerName CHAR(200),
+		ReviewDate TIMESTAMP(3),
+		EmailAddress VARCHAR(200),
+		Rating INTEGER,
+		Comments VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductReviewID);
+
+DROP TABLE ProductModelProductDescriptionCulture;
+
+CREATE TABLE ProductModelProductDescriptionCulture
+	(
+		ProductModelID INTEGER,
+		ProductDescriptionID INTEGER,
+		CultureID VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductModelID);
+
+DROP TABLE ProductModel;
+
+CREATE TABLE ProductModel
+	(
+		ProductModelID	INTEGER,
+		Name VARCHAR(200),
+		CatalogDescription VARCHAR(200),
+		Instructions VARCHAR(200),
+		rowguid	VARCHAR(200),
+		ModifiedDate	TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductModelID);
+
+DROP TABLE ProductListPriceHistory;
+
+CREATE TABLE ProductListPriceHistory
+	(
+		ProductID INTEGER,
+		StartDate TIMESTAMP(3),
+		EndDate TIMESTAMP(3),
+		ListPrice DECIMAL(10,5),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);
+
+DROP TABLE ProductInventory;
+
+CREATE TABLE ProductInventory
+	(
+		ProductID INTEGER,
+		LocationID INTEGER,
+		Shelf VARCHAR(200),
+		BinNumber INTEGER,
+		Quantity INTEGER,
+		rowguid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);
+
+DROP TABLE ProductDocument;
+
+CREATE TABLE ProductDocument
+	(
+		ProductID	INTEGER,
+		DocumentNode VARCHAR(200),
+		ModifiedDate	TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ProductID);		
+
+.LOGOFF
+.QUIT		
+
+		
+		

@@ -1,0 +1,15 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_CORE;
+
+
+		
+INSERT INTO DP_CORE.ProductCategory
+SELECT
+	*
+FROM DP_LDR.ProductCategory;		
+
+
+.LOGOFF
+.QUIT
