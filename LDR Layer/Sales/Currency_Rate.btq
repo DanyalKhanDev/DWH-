@@ -1,0 +1,79 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE CurrencyRate;
+
+CREATE TABLE CurrencyRate
+	(
+		CurrencyRateID INTEGER,
+		CurrencyRateDate TIMESTAMP(3),
+		FromCurrencyCode VARCHAR(200),
+		ToCurrencyCode VARCHAR(200),
+		AverageRate INTEGER
+	)
+		PRIMARY INDEX(CurrencyRateID);
+
+DELETE FROM DP_LDR.CurrencyRate;		
+INSERT INTO DP_LDR.CurrencyRate
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate3 = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate3 AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_APRIL_1_10
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_APRIL_11_20
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_APRIL_21_31
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_MAY_06_10
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_MAY_11_20
+UNION
+SELECT
+	CASE WHEN CurrencyRateID2 = 'NULL' THEN -1 ELSE CAST(CurrencyRateID2 AS INTEGER) END,
+	CASE WHEN CurrencyRateDate = 'NULL' THEN NULL ELSE CAST(CurrencyRateDate AS TIMESTAMP(3)) END,
+	CASE WHEN FromCurrencyCode = 'NULL' THEN 'N/A' ELSE FromCurrencyCode END,
+	CASE WHEN ToCurrencyCode = 'NULL' THEN 'N/A' ELSE ToCurrencyCode END,
+	CASE WHEN AverageRate = 'NULL' THEN -1 ELSE CAST(AverageRate AS INTEGER) END
+FROM DP_STG.SALES_MAY_21_31
+;		
+
+
+.LOGOFF
+.QUIT

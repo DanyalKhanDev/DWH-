@@ -1,0 +1,34 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE Customer;
+
+CREATE TABLE Customer
+	(
+		CustomerID VARCHAR(200),
+		PersonID INTEGER,
+		StoreID INTEGER,
+		TerritoryID INTEGER,
+		AccountNumber VARCHAR(200),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(CustomerID);
+
+DELETE FROM DP_LDR.Customer;		
+INSERT INTO DP_LDR.Customer
+SELECT
+	CASE WHEN CustomerID = 'NULL' THEN 'N/A' ELSE CustomerID END,
+	CASE WHEN PersonID = 'NULL' THEN -1 ELSE CAST(PersonID AS INTEGER) END,
+	CASE WHEN StoreID = 'NULL' THEN -1 ELSE CAST(StoreID AS INTEGER) END,
+	CASE WHEN TerritoryID = 'NULL' THEN -1 ELSE CAST(TerritoryID AS INTEGER) END,
+	CASE WHEN AccountNumber = 'NULL' THEN 'N/A' ELSE AccountNumber END,
+	CASE WHEN RowGuid = 'NULL' THEN 'N/A' ELSE RowGuid END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS TIMESTAMP(3)) END
+FROM DP_STG.Customer_Sales;		
+
+
+.LOGOFF
+.QUIT

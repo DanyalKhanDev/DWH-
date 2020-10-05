@@ -1,0 +1,32 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE ShoppingCartItem;
+
+CREATE TABLE ShoppingCartItem
+	(
+		ShoppingCartItemID VARCHAR(200),
+		ShoppingCartID INTEGER,
+		Quantity INTEGER,
+		ProductID INTEGER,
+		DateCreated TIMESTAMP(3),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(ShoppingCartItemID);
+
+DELETE FROM DP_LDR.ShoppingCartItem;		
+INSERT INTO DP_LDR.ShoppingCartItem
+SELECT
+	CASE WHEN ShoppingCartItemID = 'NULL' THEN 'N/A' ELSE ShoppingCartItemID END,
+	CASE WHEN ShoppingCartID = 'NULL' THEN -1 ELSE CAST(ShoppingCartID AS INTEGER) END,
+	CASE WHEN Quantity = 'NULL' THEN -1 ELSE CAST(Quantity AS INTEGER) END,
+	CASE WHEN ProductID = 'NULL' THEN -1 ELSE CAST(ProductID AS INTEGER) END,
+	CASE WHEN DateCreated = 'NULL' THEN NULL ELSE CAST(DateCreated AS TIMESTAMP(3)) END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS TIMESTAMP(3)) END
+FROM DP_STG.Shopping_Cart_Item_Sales;		
+
+
+.LOGOFF
+.QUIT

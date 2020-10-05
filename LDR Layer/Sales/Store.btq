@@ -1,0 +1,30 @@
+.sessions 2;
+ERRLIMIT 100;
+.LOGON 192.168.234.128 /DBC,DBC;
+DATABASE DP_LDR;
+
+DROP TABLE Store;
+
+CREATE TABLE Store
+	(
+		BusinessEntityID VARCHAR(200),
+		Name VARCHAR(200),
+		Demographics VARCHAR(200),
+		RowGuid VARCHAR(200),
+		ModifiedDate TIMESTAMP(3)
+	)
+		PRIMARY INDEX(BusinessEntityID);
+
+DELETE FROM DP_LDR.Store;		
+INSERT INTO DP_LDR.Store
+SELECT
+	CASE WHEN BusinessEntityID = 'NULL' THEN 'N/A' ELSE BusinessEntityID END,
+	CASE WHEN Name = 'NULL' THEN 'N/A' ELSE Name END,
+	CASE WHEN Demographics = 'NULL' THEN 'N/A' ELSE Demographics END,
+	CASE WHEN RowGuid = 'NULL' THEN 'N/A' ELSE RowGuid END,
+	CASE WHEN ModifiedDate = 'NULL' THEN NULL ELSE CAST(ModifiedDate AS TIMESTAMP(3)) END
+FROM DP_STG.Store_Sales;		
+
+
+.LOGOFF
+.QUIT
