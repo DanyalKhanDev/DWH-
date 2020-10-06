@@ -1,0 +1,224 @@
+Insert Into DT_SDM.Sales_Fact_Monthly
+SELECT 
+			SOH.BusinessEntityID1 AS Customer_ID, 
+			(CAST(SOH.OrderDate AS DATE) - EXTRACT(DAY FROM SOH.OrderDate)+1) AS Order_Month_ID,			
+			(CAST(SOH.ShipDate AS DATE) - EXTRACT(DAY FROM SOH.ShipDate)+1) AS Ship_Month_ID,		
+			CAST (CUS.personid as int) AS Sales_Person_ID, 
+			CAST (SOH.TerritoryID as int) AS 	Territory_ID, 
+			CAST((CASE	
+						WHEN SOH.OnlineOrderFlag = '1' THEN 1 
+						WHEN SOH.OnlineOrderFlag = '0' THEN 2 
+						ELSE SOH.OnlineOrderFlag 
+					END) as int) as Sale_Type_ID,  --- 	1 is online and 2 is from the store
+			CAST((CASE	SOH.CreditCardID 
+						WHEN '0' THEN 1 
+						ELSE 2 
+					END) as int) as Payment_Type_ID,	-- 1 is non creaditCard Payment and 2 is creditCard Payment
+			SOH.ShipMethodID AS Ship_Type_ID,
+			SUM(SOH.SubTotal) AS Sales_Amt,
+			SUM(SOH.Freight)	AS Freight_Amt,
+			SUM(SOH.TaxAmt)	AS Tax_Amt
+	FROM	
+			DT_CDM.SalesOrderHeader SOH
+	LEFT JOIN DT_CDM.Customer CUS
+		ON	CUS.CustomerID = SOH.BusinessEntityID1
+	GROUP BY 1,2,3,4,5,6,7,8;
+
+-------------------------------PURCHASE_FACT_MONTHLY-------------------------------------
+
+Insert Into DT_SDM.PURCHASE_FACT_MONTHLY
+sel
+		     POH.vendorid as Vendor_id , 
+			 (CAST(POH.orderdate AS DATE) - EXTRACT(DAY FROM POH.orderdate)+1) as Order_Month_id,
+             (CAST(POH.shipdate AS DATE) - EXTRACT(DAY FROM POH.shipdate)+1) as Ship_Month_id,
+	          POH.Shipmethodid as Ship_Type_id,
+	         SUM	(POH.subtotal) as Purchase_Amt,
+			 SUM   (POD.OrderQty) as  Purchase_Qty, 
+			 SUM    (POH.Freight) as Freight,
+			 SUM    (POH.Taxamt) as Taxamt,
+			 SUM (POD.ReceivedQty) as Recieved_Qty,
+			 SUM ( POD.RejectedQty) as Rejected_Qty
+	from 
+	       DT_CDM.PurchaseOrderHeader POH
+	left join  DT_CDM.PurchaseOrderDetail POD 
+	on POH.purchaseorderid=POD.purchaseorderid
+	GROUP BY 1,2,3,4;
+
+------------------------------PRODUCT_PURCHASE_FACT_MONTHLY--------------------------------------
+
+Insert Into DT_SDM.PRODUCT_PURCHASE_FACT_MONTHLY
+Select 
+POH.VendorID,
+POD.ProductID,
+Cast((CAST(POH.OrderDate AS DATE) - Extract(DAY FROM POH.OrderDate)+1) as date format 'YYYY-MM-DD') AS OrderMonthId,
+cast((CAST(POH.ShipDate AS DATE) - Extract(DAY FROM POH.ShipDate)+1)  as date format 'YYYY-MM-DD') AS ShipMonthId,
+SM.ShipMethodID,
+SUM(POD.linetotal) AS Purchase_Amt,
+Cast(SUM(POD.OrderQty) as Integer) AS Purchase_Qty,
+Cast(SUM(POD.ReceivedQty) as Integer) AS Recieved_Qty,
+Cast(SUM(POD.RejectedQty) as Integer) AS Rejected_Qty
+
+from DT_CDM.PurchaseOrderDetail AS POD
+	JOIN DT_CDM.PurchaseOrderHeader AS POH 
+	 ON POD.PurchaseOrderID = POH.PurchaseOrderID
+	JOIN DT_CDM.ShipMethod AS SM 
+	 ON POH.ShipMethodID = SM.ShipMethodID
+Group by POH.VendorID, POD.ProductID, POH.OrderDate, SM.ShipMethodID, POH.ShipDate, POH.Status;
+
+-------------------------------PRODUCT_INVENTORY_FACT_MONTHLY-------------------------------------
+
+Insert Into DT_SDM.PRODUCT_INVENTORY_FACT_MONTHLY
+SELECT
+PRODUCTID,
+extract(month from ModifiedDate) as Month_id,
+LocationID,
+SUM(QUANTITY) AS QUANTITY
+FROM
+DT_CDM.ProductInventory
+group by 1,2,3;
+
+-------------------------------Product_Sales_Fact_Monthly-------------------------------------
+
+Insert Into DT_SDM.Product_Sales_Fact_Monthly
+SELECT 
+		SOH.BusinessEntityID1 as Customer_ID, 
+		(CAST(OrderDate AS DATE) - EXTRACT(DAY FROM OrderDate)+1) as Order_Month_ID,
+		(CAST(ShipDate AS DATE) - EXTRACT(DAY FROM ShipDate)+1) as Ship_Month_ID,
+		SOD.ProductID as Product_ID, 
+		CUS.PersonID as Sales_Person_ID, 
+		SOH.TerritoryID as Territory_ID,				
+		(CASE	
+			WHEN OnlineOrderFlag = 1 THEN 1 
+			WHEN OnlineOrderFlag = 0 THEN 2 
+			ELSE OnlineOrderFlag 
+		END) as Sale_Type_ID, 
+		(CASE	
+			WHEN SOH.CreditcardID = 0 THEN 1 
+			ELSE 2 
+		END) as Payment_Type_ID, 
+		SOH.ShipMethodID as Ship_Type_ID, 
+		SUM(SOD.LineTotal) as Sales_Amt,
+		SUM(SOD.OrderQty) as Sales_Qty, 
+		SOD.UnitPrice as Unit_Price,
+		PD.StandardCost as Standard_Cost, 
+		SOD.UnitPriceDiscount as Discount_Amount,
+		(Coalesce(Unit_Price,0) - (Coalesce(Standard_Cost,0) + Coalesce(Discount_Amount,0))) * coalesce(Sales_Qty,1) as PROFIT
+FROM 
+		DT_CDM.SalesOrderHeader SOH
+		JOIN DT_CDM.Customer CUS
+			ON SOH.BusinessEntityID1 = CUS.CustomerID
+		JOIN DT_CDM.SalesOrderDetail SOD
+			ON SOH.SalesOrderID = SOD.SalesOrderID
+		JOIN DT_CDM.Product PD 
+			ON SOD.ProductID = PD.ProductID
+GROUP BY 1,2, 3, 4,5,6,7,8,9,12,13,14;
+
+-------------------------------VENDOR_DIM-------------------------------------
+
+Insert Into DT_SDM.VENDOR_DIM
+Select 
+V.BusinessEntityID As Vendor_id,
+V.Name As vendor_name
+from DT_CDM.Vendor V
+group by 1,2;
+
+--------------------------------PERSON_DIM------------------------------------
+
+Insert Into DT_SDM.PERSON_DIM
+select 
+businessentityid as Person_id, 
+FirstName as First_Name, 
+MiddleName as Middle_Name, 
+LastName as Last_Name
+from DT_CDM.Person
+group by 1,2,3,4;
+
+-----------------------------------PRODUCT_CAT_DIM---------------------------------
+
+Insert Into DT_SDM.PRODUCT_CAT_DIM
+select 
+productcategoryID, 
+"name"
+from DT_CDM.ProductCategory
+Group by 1,2;
+
+--------------------------------PRODUCT_DIM------------------------------------
+
+Insert Into DT_SDM.PRODUCT_DIM
+select 
+productID as Product_id, 
+productsubcategoryID as Product_Sub_cat_id,
+"name" as Product_Name
+from DT_CDM.product
+Group by 1,2,3;
+
+----------------------------------PRODUCT_SUB_CAT_DIM---------------------------------
+
+Insert Into DT_SDM.PRODUCT_SUB_CAT_DIM
+select 
+productsubcategoryID as Product_Sub_Cat_id, 
+name as Product_Sub_Cat_Name, 
+productcategoryID as Product_Cat_id
+from DT_CDM.productsubcategory
+Group by 1,2,3;
+
+---------------------------SHIP_TYPE_DIM-----------------------------------------
+
+Insert Into DT_SDM.SHIP_TYPE_DIM
+select
+		SM.ShipMethodID	as Ship_Type_id,
+		SM.Name as Ship_Type_Name
+	from DT_CDM.ShipMethod SM
+Group by 1,2;
+
+-------------------------------TERRITORY_DIM-------------------------------------
+
+Insert Into DT_SDM.TERRITORY_DIM
+Sel 
+A.Territoryid as Territory_id, A.Name_ as Territory_Name, B.countryregioncode as Country_Region_id
+from DT_CDM.salesterritory as A
+left Join DT_CDM.countryregion as B
+on A.countryregioncode=B.countryregioncode
+Group by 1,2,3;
+
+------------------------------Country_Region_DIM--------------------------------------
+
+Insert Into DT_SDM.Country_Region_DIM
+Sel 
+Countryregioncode as Country_Region_id, "Name" as Country_Region_Name
+from DT_CDM.CountryRegion
+Group by 1,2;
+
+------------------------------Sales_Type_DIM--------------------------------------
+
+Insert Into DT_SDM.Sales_Type_DIM
+Sel
+Case 
+	When OnlineOrderFlag =1 then 1
+	When OnlineOrderFlag=0 then 2
+	Else OnlineOrderFlag 
+END	as Sales_Type_id,
+Case 
+	When OnlineOrderFlag =1 then 'Online'
+	When OnlineOrderFlag=0 then 'Store'
+	Else OnlineOrderFlag 
+END	as Sales_Type_Name
+From
+DT_CDM.Salesorderheader
+group by 1,2;
+
+-----------------------------Payment_Type_DIM---------------------------------------
+
+Insert Into DT_SDM.Payment_Type_DIM
+Sel
+Case 
+	When Creditcardid = 0 then 1
+	Else 2 
+END	as Payment_Type_id,
+Case 
+	When Creditcardid = 0 then 'Cash'
+	Else 'Credit Card' 
+END	as Payment_Type_Name
+From
+DT_CDM.Salesorderheader
+group by 1,2;
