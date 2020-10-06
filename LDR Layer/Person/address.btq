@@ -1,0 +1,68 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertAddress;  
+
+   DELETE TABLE DP_LDR.DP_LDR_Address;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertAddress
+   INSERT INTO DP_LDR_Address
+
+
+
+   SELECT DISTINCT
+
+   Case When em.AddressID2='NULL' OR em.AddressID2='' THEN NULL 
+   ELSE
+   cast (em.AddressID2 as INTEGER)
+   END,
+
+   Case When em.AddressLine1='NULL' OR em.AddressLine1='' THEN NULL 
+   ELSE
+   em.AddressLine1
+   END,
+
+   Case When em.AddressLine2='NULL' OR em.AddressLine2='' THEN NULL 
+   ELSE
+   (em.AddressLine2)
+   END,
+
+   Case When em.City='NULL' OR em.City='' THEN NULL 
+   ELSE
+   em.City
+   END,
+   Case When em.StateProvinceID1='NULL' OR em.StateProvinceID1='' THEN NULL 
+   ELSE
+   cast (em.StateProvinceID1 as INTEGER)
+   END,
+  
+   Case When em.PostalCode='NULL' OR em.PostalCode='' THEN NULL 
+   ELSE
+   em.PostalCode
+   END,
+   Case When em.SpatialLocation='NULL' OR em.SpatialLocation='' THEN NULL 
+   ELSE
+   em.SpatialLocation
+   END,
+   Case When em.rowguid5='NULL' OR em.rowguid5='' THEN NULL 
+   ELSE
+   em.rowguid5
+   END,
+   
+   Case
+   when em.ModifiedDate7='NULL' OR em.ModifiedDate7='' THEN NULL
+   ELSE
+   cast(cast(em.ModifiedDate7 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+   END as dat
+
+   FROM  
+   DP_STG.DP_STG_Person em where dat is not null ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
