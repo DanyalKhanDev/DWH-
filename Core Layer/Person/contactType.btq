@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_ContactType
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertContactType;  
+
+   DELETE TABLE DP_Core.DP_Core_ContactType ;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertContactType 
+   INSERT INTO DP_Core_ContactType 
+  SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_ContactType em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

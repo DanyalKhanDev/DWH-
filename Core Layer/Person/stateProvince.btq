@@ -1,0 +1,25 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_StateProvince 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertStateProvince;  
+
+   DELETE TABLE DP_Core.DP_Core_StateProvince;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertStateProvince
+   INSERT INTO DP_Core_StateProvince
+
+
+
+   SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_StateProvince em ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_BusinessEntityContact 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertBusinessEntityContact;  
+
+   DELETE TABLE DP_Core.DP_Core_BusinessEntityContact;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertBusinessEntityContact 
+   INSERT INTO DP_Core_BusinessEntityContact 
+  SELECT * 
+
+   FROM  
+   DP_LDR.DP_LDR_BusinessEntityContact em ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

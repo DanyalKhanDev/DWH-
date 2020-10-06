@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_CountryRegion
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertCountryRegion;  
+
+   DELETE TABLE DP_Core.DP_Core_CountryRegion;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertCountryRegion 
+   INSERT INTO DP_Core_CountryRegion   
+  SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_CountryRegion em ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

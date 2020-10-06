@@ -1,0 +1,25 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPerson;  
+
+   DELETE TABLE DP_Core.DP_Core_Person;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPerson
+   INSERT INTO DP_Core_Person
+
+
+
+   SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

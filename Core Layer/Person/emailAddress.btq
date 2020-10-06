@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_EmailAddress 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertEmail;  
+
+   DELETE TABLE DP_Core.DP_Core_EmailAddress;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertEmail 
+   INSERT INTO DP_Core_EmailAddress   
+   SELECT *
+   
+   FROM  
+   DP_LDR.DP_LDR_EmailAddress  em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
