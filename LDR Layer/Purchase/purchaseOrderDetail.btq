@@ -1,0 +1,73 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Purchase 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPurchaseOrderDetail;  
+
+   DELETE TABLE DP_LDR.DP_LDR_PurchaseOrderDetail;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPurchaseOrderDetail 
+   INSERT INTO DP_LDR.DP_LDR_PurchaseOrderDetail
+   SELECT DISTINCT
+
+   Case when sh.PurchaseOrderID1='NULL' OR sh.PurchaseOrderID1='' THEN NULL
+   ELSE
+   cast (sh.PurchaseOrderID1 as INTEGER)
+   END,
+   Case when sh.PurchaseOrderDetailID='NULL' OR sh.PurchaseOrderDetailID='' THEN NULL
+   ELSE
+   cast (sh.PurchaseOrderDetailID as INTEGER)
+   END,
+
+
+   CASE  When sh.DueDate='NULL' OR sh.DueDate='' THEN NULL 
+   ELSE
+   to_timestamp(sh.DueDate,'MM/DD/YYYY HH24:MI:SS AM') END,
+   Case when sh.OrderQty='NULL' OR sh.OrderQty='' THEN NULL
+   ELSE
+   cast (sh.OrderQty as INTEGER)
+   END,
+   Case when sh.ProductID1='NULL' OR sh.ProductID1='' THEN NULL
+   ELSE
+   cast (sh.ProductID1 as INTEGER)
+   END,
+   Case when sh.UnitPrice='NULL' OR sh.UnitPrice='' THEN NULL
+   ELSE
+   cast(sh.UnitPrice as decimal(10,2))
+   END,  
+
+    Case when sh.LineTotal='NULL' OR sh.LineTotal='' THEN NULL
+   ELSE
+   cast(sh.LineTotal as decimal(10,2))
+   END,
+
+  Case when sh.ReceivedQty='NULL' OR sh.ReceivedQty='' THEN NULL
+   ELSE
+   cast (sh.ReceivedQty as INTEGER)
+   END,
+    Case when sh.RejectedQty='NULL' OR sh.RejectedQty='' THEN NULL
+   ELSE
+   cast (sh.RejectedQty as INTEGER)
+   END,
+
+  Case when sh.StockedQty='NULL' OR sh.StockedQty='' THEN NULL
+   ELSE
+   cast (sh.StockedQty as INTEGER)
+   END,
+   
+   CASE  
+   when sh.ModifiedDate1='NULL' OR sh.ModifiedDate1='' THEN NULL
+   ELSE
+   to_timestamp(sh.ModifiedDate1,'MM/DD/YYYY HH24:MI:SS AM') END
+
+   FROM  
+   DP_STG.DP_STG_Purchase sh;
+   
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

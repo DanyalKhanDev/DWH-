@@ -1,0 +1,51 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Purchase 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertShipMethod;  
+
+   DELETE TABLE DP_LDR.DP_LDR_ShipMethod;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertShipMethod 
+   INSERT INTO DP_LDR.DP_LDR_ShipMethod
+   SELECT DISTINCT
+   Case When sh.ShipMethodID2='NULL' OR sh.ShipMethodID2='' THEN NULL 
+   ELSE
+   cast (sh.ShipMethodID2 as INTEGER)
+   END,
+
+    Case When sh.ShipMethodID2='NULL' OR sh.ShipMethodID2='' THEN NULL 
+   ELSE
+    (sh.Name2 )
+   END,
+
+   Case When sh.ShipBase='NULL' OR sh.ShipBase='' THEN NULL 
+   ELSE
+   cast (sh.ShipBase AS decimal(10,2))
+   END,
+
+    Case When sh.ShipRate='NULL' OR sh.ShipRate='' THEN NULL 
+   ELSE
+   cast (sh.ShipRate AS decimal(10,2))
+   END,
+    Case When sh.rowguid1='NULL' OR sh.rowguid1='' THEN NULL 
+   ELSE
+    (sh.rowguid1 )
+   END,
+   CASE 
+   when sh.ModifiedDate4='NULL' THEN NULL
+   ELSE
+   to_timestamp(sh.ModifiedDate4,'MM/DD/YYYY HH24:MI:SS AM') END
+    
+
+   FROM  
+   DP_STG.DP_STG_Purchase sh;  
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
+12:44 AM 7/24/2020

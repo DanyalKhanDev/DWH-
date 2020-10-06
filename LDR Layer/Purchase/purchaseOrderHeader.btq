@@ -1,0 +1,82 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Purchase 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPurchaseOrderHeader;  
+
+   DELETE TABLE DP_LDR.DP_LDR_PurchaseOrderHeader;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPurchaseOrderHeader 
+   INSERT INTO DP_LDR.DP_LDR_PurchaseOrderHeader
+
+  SELECT DISTINCT
+
+   Case when sh.PurchaseOrderID2='NULL' OR sh.PurchaseOrderID2=''  THEN NULL 
+   ELSE 
+   cast (sh.PurchaseOrderID2 as INTEGER)
+   END,
+
+   Case when sh.ShipMethodID1='NULL' THEN NULL 
+   ELSE 
+   cast (sh.ShipMethodID1 as INTEGER)
+   END,
+
+   Case when sh.VendorID='NULL' THEN NULL 
+   ELSE 
+   cast (sh.VendorID as INTEGER)
+   END,
+
+   Case when sh.RevisionNumber='NULL' THEN NULL 
+   ELSE 
+   cast (sh.RevisionNumber as INTEGER)
+   END,
+
+   Case when sh.Status='NULL' THEN NULL 
+   ELSE 
+   cast (sh.Status as INTEGER)
+   END,
+
+   Case when sh.OrderDate='NULL' OR sh.OrderDate='' THEN NULL 
+   ELSE 
+   to_timestamp(sh.OrderDate,'MM/DD/YYYY HH24:MI:SS AM') 
+   END,
+
+   Case when sh.ShipDate='NULL' OR sh.ShipDate='' THEN NULL 
+   ELSE 
+   to_timestamp(sh.ShipDate,'MM/DD/YYYY HH24:MI:SS AM') 
+   END,
+
+   Case when sh.SubTotal='NULL' THEN NULL 
+   ELSE 
+   cast (sh.SubTotal as decimal(10,2))
+   END,
+
+   Case when sh.TaxAmt='NULL' THEN NULL 
+   ELSE 
+   cast (sh.TaxAmt as decimal(10,2))
+   END,
+
+   Case when sh.Freight='NULL' THEN NULL 
+   ELSE 
+   cast (sh.Freight as decimal(10,2))
+   END,
+
+   Case when sh.TotalDue='NULL' THEN NULL 
+   ELSE 
+   cast (sh.TotalDue as decimal(10,2))
+   END,
+
+   Case when sh.modifiedDate2='NULL' OR sh.modifiedDate2='' THEN NULL 
+   ELSE 
+   to_timestamp(sh.modifiedDate2,'MM/DD/YYYY HH24:MI:SS AM') 
+   END
+   
+   FROM  
+   DP_STG.DP_STG_Purchase sh;
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

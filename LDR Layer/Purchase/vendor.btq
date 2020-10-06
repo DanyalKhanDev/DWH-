@@ -1,0 +1,64 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Purchase 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertVendor;  
+
+   DELETE TABLE DP_LDR.DP_LDR_Vendor;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertVendor 
+   INSERT INTO DP_LDR.DP_LDR_Vendor
+  SELECT distinct
+
+
+  Case When sh.BusinessEntityID1='NULL' OR sh.BusinessEntityID1='' THEN NULL 
+   ELSE
+   cast (sh.BusinessEntityID1 as INTEGER)
+   END as BID,
+
+   Case When sh.AccountNumber='NULL' OR sh.AccountNumber='' THEN NULL 
+   ELSE
+    (sh.AccountNumber )
+   END as Acc,
+
+    Case When sh.Name1='NULL' OR sh.Name1='' THEN NULL 
+   ELSE
+    (sh.Name1 )
+   END as Nam,
+
+Case When sh.CreditRating='NULL' OR sh.CreditRating='' THEN NULL 
+   ELSE
+   cast (sh.CreditRating as INTEGER)
+   END as CrRa,
+
+   Case When sh.PreferredVendorStatus='NULL' OR sh.PreferredVendorStatus='' THEN NULL 
+   ELSE
+   cast (sh.PreferredVendorStatus as INTEGER)
+   END as prefstatus,
+   
+   Case When sh.ActiveFlag='NULL' OR sh.ActiveFlag='' THEN NULL 
+   ELSE
+   cast (sh.ActiveFlag as INTEGER)
+   END as acFlag,
+
+   Case When sh.PurchasingWebServiceURL='NULL' OR sh.PurchasingWebServiceURL='' THEN NULL 
+   ELSE
+    (sh.PurchasingWebServiceURL )
+   END as url,
+
+   CASE 
+   when sh.ModifiedDate3='NULL' THEN NULL
+   ELSE
+   to_timestamp(sh.ModifiedDate3,'MM/DD/YYYY HH24:MI:SS AM') END
+
+   FROM  
+   DP_STG.DP_STG_Purchase sh;
+  
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
