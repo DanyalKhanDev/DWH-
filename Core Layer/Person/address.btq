@@ -1,0 +1,24 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_Address
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertAddress;  
+
+   DELETE TABLE DP_Core.DP_Core_Address;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertAddress
+   INSERT INTO DP_Core_Address
+
+
+
+   SELECT *
+   FROM  
+   DP_LDR.DP_LDR_Address em  ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
