@@ -1,0 +1,276 @@
+Deployment of Core LAYER ( DDL SCRIPTS) 
+
+
+------------------------
+PURCHASE SUBJECT AREA DDL 
+-------------------------
+
+create set table DP_Core.DP_Core_ShipMethod(
+  shipMethodID INTEGER,
+      name_ VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+      shipBase DECIMAL(10,2),
+      shipRate DECIMAL(10,2),
+      rowguid VARCHAR(200) CHARACTER SET LATIN NOT CASESPECIFIC,
+      modifiedDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT')
+PRIMARY INDEX ( shipMethodID );
+
+---------------
+
+	create set table DP_Core.DP_Core_Vendor(
+
+	businessEntityID INT,
+	accountNumber varchar(400),
+	name_ varchar(500),
+	creditRating decimal(10,2),
+	prefferedVendorStatus INT,
+	activeFlag INT,
+	purchasingWebServiceURL varchar(800),
+	modifiedDate DATE FORMAT 'YYYY-MM-DD')
+	 primary index(businessEntityID);
+
+
+	 ----------------
+
+
+	create set table DP_Core.DP_Core_PurchaseOrderDetail(
+
+	purchaseOrderID INT,
+	purchaseOrderDetailID INT,
+	dueDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT',
+	orderQty INT,
+	productID INT,
+	unitPrice decimal(10,2),
+	lineTotal decimal(10,2),
+	receivedQty INT,
+	rejectedQty INT,
+	stokedQty INT,
+	modifiedDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT')
+	 primary index(purchaseOrderID);
+
+
+----------
+
+create set table DP_Core.DP_Core_ProductVendor(
+
+businessEntityID INT,
+productID INT,
+averageLeadTime INT,
+standardPrice decimal(10,2),
+lastReceiptCost decimal(10,2),
+lastReceiptDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT',
+minOrderQty INT,
+maxOrderQty INT,
+onOrderQty INT,
+unitMeasureCode varchar(20),
+modifiedDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT')
+ primary index(businessEntityID);
+
+
+--------------
+
+
+create set table DP_Core.DP_Core_PurchaseOrderHeader(
+
+   	purchaseOrderID INTEGER,
+      shipMethodID INTEGER,
+      vendorID INTEGER,
+      revisionNumber INTEGER,
+      status INTEGER,
+      orderDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT',
+      shipDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT',
+      subTotal DECIMAL(10,2),
+      taxAmt DECIMAL(10,2),
+      freight DECIMAL(10,2),
+      totalDue DECIMAL(10,2),
+      modifiedDate TIMESTAMP(6) FORMAT 'MM/DD/YYYYHH:MI:SSBT')
+PRIMARY INDEX ( purchaseOrderID );
+
+
+-----------------------
+PERSON SUBJECT AREA DDL
+-----------------------
+
+
+
+create set table DP_Core.DP_Core_EmailAddress(
+
+businessEntityID INT,
+emailAdderssID INT,
+emailAddress varchar(200))
+
+ primary index(businessEntityID);
+
+-----------
+
+
+create set table DP_Core.DP_Core_PersonPhone(
+
+businessEntityID INT,
+phoneNumber varchar(200),
+phoneNumberTypeID INT)
+ primary index(businessEntityID);
+
+
+--------------
+
+
+create set table DP_Core.DP_Core_PhoneNumberType(
+
+phoneNumberTypeID INT,
+name_ varchar(300))
+ primary index(phoneNumberTypeID);
+
+
+
+-------------
+
+
+
+create set table DP_Core.DP_Core_AddressType(
+
+addressTypeID INT,
+name_ varchar(300),
+rowguid varchar(300),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst')
+ primary index(addressTypeID);
+
+
+
+--------------------
+
+
+create set table DP_Core.DP_Core_Person(
+
+	businessEntityID INT,
+	personType varchar(20),
+	nameStyle INT,
+	titles varchar(50),
+	firstName varchar(100),
+	middleName varchar(50),
+	lastName varchar(50),
+	suffix varchar(30),
+	emailPromotion INT,
+	additionalContactInfo varchar(500),
+	demographics varchar(500),
+	rowguid varchar(500),
+	modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst')
+
+
+	primary index(businessEntityID);
+
+
+-------------
+
+
+Create set table DP_Core.DP_Core_Password(
+
+businessEntityID INT,
+passwordHash varchar(800),
+passwordSalt varchar(800)
+)
+primary index (businessEntityID)
+
+
+--------------
+
+
+Create set table DP_Core.DP_Core_BusinessEntityContact(
+
+businessEntityID INT,
+personID INT,
+contactTypeID INT,
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+)
+primary index (businessEntityID)
+
+
+-----------------
+
+
+Create set table DP_Core.DP_Core_BusinessEntity(
+
+businessEntityID INT,
+rowguid varchar(500),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+)
+primary index (businessEntityID)
+
+---------------------------
+
+
+Create set table DP_Core.DP_Core_BusinessEntityAddress(
+
+addressID INT,
+businessEntityID INT,
+addressTypeID INT,
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+)
+primary index (addressID)
+
+-------------
+
+
+Create set table DP_Core.DP_Core_CountryRegion(
+
+countryRegionCode varchar(200),
+name_ varchar(500),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+)
+primary index (countryRegionCode)
+
+
+
+--------------
+
+
+
+Create set table DP_Core.DP_Core_StateProvince(
+
+stateProvinceID INT,
+stateProvinceCode varchar(200),
+countryRegionCode varchar(200),
+IsOnlyStateProvinceFlag INT,
+name_ varchar(500),
+territoryID INT,
+rowguid varchar(700),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+
+)
+primary index (stateProvinceID)
+
+
+------------
+
+
+
+
+
+	 ------------
+
+
+	 Create set table DP_Core.DP_Core_Address(
+
+addressID INT,
+addressLine1 varchar(500),
+addressLine2 varchar(500),
+city varchar(200),
+stateProvinceID INT,
+postalCode varchar(500),
+spatialLocation varchar(500),
+rowguid varchar(700),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+
+)
+primary index (addressID)
+
+
+----------------
+
+ Create set table DP_Core.DP_Core_ContactType(
+
+contactTypeID INT,
+name_ varchar(500),
+modifiedDate TIMESTAMP(6) FORMAT 'hh:mi:sst'
+
+)
+primary index (contactTypeID)
