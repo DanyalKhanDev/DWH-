@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_ShipMethod 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertShipMethod;  
+
+   DELETE TABLE DP_Core.DP_Core_ShipMethod;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertShipMethod 
+   INSERT INTO DP_Core.DP_Core_ShipMethod
+   SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_ShipMethod sh;  
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

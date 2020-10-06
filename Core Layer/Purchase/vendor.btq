@@ -1,0 +1,22 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_Vendor 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertVendor;  
+
+   DELETE TABLE DP_Core.DP_Core_Vendor;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertVendor 
+   INSERT INTO DP_Core.DP_Core_Vendor
+  SELECT *
+   FROM  
+   DP_LDR.DP_LDR_Vendor sh;
+  
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

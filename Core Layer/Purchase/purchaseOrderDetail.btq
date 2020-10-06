@@ -1,0 +1,23 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_Core;
+
+  
+   SELECT * FROM  
+   DP_LDR.DP_LDR_PurchaseOrderDetail 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPurchaseOrderDetail;  
+
+   DELETE TABLE DP_Core.DP_Core_PurchaseOrderDetail;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPurchaseOrderDetail 
+   INSERT INTO DP_Core.DP_Core_PurchaseOrderDetail
+   SELECT *
+
+   FROM  
+   DP_LDR.DP_LDR_PurchaseOrderDetail sh;
+   
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
