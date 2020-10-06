@@ -1,0 +1,44 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertBusinessEntityAddress;  
+
+   DELETE TABLE DP_LDR.DP_LDR_BusinessEntityAddress;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertBusinessEntityAddress 
+   INSERT INTO DP_LDR_BusinessEntityAddress  
+SELECT distinct
+   Case 
+   When trim(em.AddressID1) ='NULL' OR  em.AddressID1='' THEN NULL  
+   ELSE 
+   cast (trim(em.AddressID1) as INTEGER)
+   END as id,
+   Case 
+   When trim(em.BusinessEntityID5) ='NULL' OR em.BusinessEntityID5='' THEN NULL  
+   ELSE 
+   cast (trim(em.BusinessEntityID5) as INTEGER)
+   END ,
+   Case 
+   When trim(em.AddressTypeID1) ='NULL' OR em.AddressTypeID1='' THEN NULL  
+   ELSE 
+   cast (trim(em.AddressTypeID1) as INTEGER)
+   END ,
+   
+   Case 
+when trim(em.ModifiedDate5)='NULL' OR (em.ModifiedDate5)='' THEN NULL
+ELSE
+cast(cast(trim(em.ModifiedDate5) as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+END
+as dat  
+
+   FROM  
+   DP_STG.DP_STG_Person em where id is not null;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

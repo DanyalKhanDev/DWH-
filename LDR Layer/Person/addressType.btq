@@ -1,0 +1,41 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertAddressType;  
+
+   DELETE TABLE DP_LDR.DP_LDR_AddressType;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertAddressType 
+   INSERT INTO DP_LDR_AddressType   
+  SELECT distinct
+   Case 
+   When em.AddressTypeID2 ='NULL' THEN NULL  
+   ELSE 
+   cast (em.AddressTypeID2 as INTEGER)
+   END as id,
+   case
+   When em.Name4= 'NULL' THEN NULL
+   ELSE
+   em.Name4 END as nam,
+   case
+   when em.rowguid7='NULL' THEN NULL
+   ELSE em.rowguid7 END as row_,
+  
+   Case 
+when em.ModifiedDate10='NULL' THEN NULL
+ELSE
+cast(cast(em.ModifiedDate10 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+END
+as dat  
+
+   FROM  
+   DP_STG.DP_STG_Person em where id is not null;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

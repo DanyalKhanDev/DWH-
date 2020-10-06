@@ -1,0 +1,90 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPerson;  
+
+   DELETE TABLE DP_LDR.DP_LDR_Person;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPerson
+   INSERT INTO DP_LDR_Person
+
+
+
+   SELECT DISTINCT
+
+   Case When em.BusinessEntityID1='NULL' OR em.BusinessEntityID1='' THEN NULL 
+   ELSE
+   cast (em.BusinessEntityID1 as INTEGER)
+   END,
+
+   Case When em.PersonType='NULL' THEN NULL 
+   ELSE
+   em.PersonType
+   END,
+
+   Case When em.NameStyle='NULL' THEN NULL 
+   ELSE
+   cast (em.NameStyle as INTEGER)
+   END,
+
+   Case When em.Titles='NULL' THEN NULL 
+   ELSE
+   em.Titles
+   END,
+
+   Case When em.FirstName='NULL' THEN NULL 
+   ELSE
+   em.FirstName
+   END,
+
+   Case When em.MiddleName='NULL' THEN NULL 
+   ELSE
+   em.MiddleName
+   END,
+
+   Case When em.LastName='NULL' THEN NULL 
+   ELSE
+   em.LastName
+   END,
+
+   Case When em.Suffix='NULL' THEN NULL 
+   ELSE
+   em.Suffix
+   END,
+
+   Case When em.EmailPromotion='NULL' THEN NULL 
+   ELSE
+   cast (em.EmailPromotion as INTEGER)
+   END,
+
+   Case When em.AdditionalContactInfo='NULL' THEN NULL 
+   ELSE
+   em.AdditionalContactInfo
+   END,
+
+   Case When em.Demographics='NULL' THEN NULL 
+   ELSE
+   em.Demographics
+   END,   
+
+   Case When em.rowguid1='NULL' THEN NULL 
+   ELSE
+   em.rowguid1
+   END,   
+   Case
+   when em.ModifiedDate1='NULL' THEN NULL
+   ELSE
+   cast(cast(em.ModifiedDate1 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+   END
+
+   FROM  
+   DP_STG.DP_STG_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

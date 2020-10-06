@@ -1,0 +1,37 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertBusinessEntity;  
+
+   DELETE TABLE DP_LDR.DP_LDR_BusinessEntity;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertBusinessEntity
+   INSERT INTO DP_LDR_BusinessEntity
+SELECT distinct
+   Case 
+   When em.BusinessEntityID5='NULL' THEN NULL  
+   ELSE 
+   cast (em.BusinessEntityID5 as INTEGER)
+   END as id,
+   case
+   when em.rowguid4='NULL' THEN NULL
+   ELSE em.rowguid4 END as row_,
+  
+   Case 
+when em.ModifiedDate6='NULL' THEN NULL
+ELSE
+cast(cast(em.ModifiedDate6 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+END
+as dat  
+
+   FROM  
+   DP_STG.DP_STG_Person em where id is not null;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

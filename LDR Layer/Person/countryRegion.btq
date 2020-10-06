@@ -1,0 +1,40 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertCountryRegion;  
+
+   DELETE TABLE DP_LDR.DP_LDR_CountryRegion;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertCountryRegion 
+   INSERT INTO DP_LDR_CountryRegion   
+  SELECT distinct
+   Case 
+   When em.CountryRegionCode2 ='NULL' THEN NULL  
+   ELSE 
+   (em.CountryRegionCode2)
+   END as id,
+
+   case
+   When em.Name3= 'NULL' THEN NULL
+   ELSE
+   em.Name3 END as nam,
+
+  
+   Case 
+when em.ModifiedDate9='NULL' THEN NULL
+ELSE
+cast(cast(em.ModifiedDate9 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+END
+as dat  
+
+   FROM  
+   DP_STG.DP_STG_Person em where id is not null;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

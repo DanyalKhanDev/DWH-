@@ -1,0 +1,65 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertStateProvince;  
+
+   DELETE TABLE DP_LDR.DP_LDR_StateProvince;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertStateProvince
+   INSERT INTO DP_LDR_StateProvince
+
+
+
+   SELECT DISTINCT
+
+   Case When em.StateProvinceID2='NULL' OR em.StateProvinceID2='' THEN NULL 
+   ELSE
+   cast (em.StateProvinceID2 as INTEGER)
+   END,
+
+   Case When em.StateProvinceCode='NULL' OR em.StateProvinceCode='' THEN NULL 
+   ELSE
+   em.StateProvinceCode
+   END,
+
+   Case When em.CountryRegionCode1='NULL' OR em.CountryRegionCode1='' THEN NULL 
+   ELSE
+   (em.CountryRegionCode1)
+   END,
+
+   Case When em.IsOnlyStateProvinceFlag='NULL' OR em.IsOnlyStateProvinceFlag='' THEN NULL 
+   ELSE
+   cast (em.IsOnlyStateProvinceFlag as INTEGER)
+   END,
+
+   Case When em.Name2='NULL' OR em.Name2='' THEN NULL 
+   ELSE
+   em.Name2
+   END,
+   Case When em.TerritoryID='NULL' OR em.TerritoryID='' THEN NULL 
+   ELSE
+   cast (em.TerritoryID as INTEGER)
+   END,
+
+   Case When em.rowguid6='NULL' OR em.rowguid6='' THEN NULL 
+   ELSE
+   em.rowguid6
+   END,
+   
+   Case
+   when em.ModifiedDate8='NULL' OR em.ModifiedDate8='' THEN NULL
+   ELSE
+   cast(cast(em.ModifiedDate8 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+   END as dat
+
+   FROM  
+   DP_STG.DP_STG_Person em where dat is not null ;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

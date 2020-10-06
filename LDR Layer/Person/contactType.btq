@@ -1,0 +1,36 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertContactType;  
+
+   DELETE TABLE DP_LDR.DP_LDR_ContactType ;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertContactType 
+   INSERT INTO DP_LDR_ContactType 
+  SELECT distinct
+   
+   NULL,
+   case
+   When em.Name4= 'NULL' THEN NULL
+   ELSE
+   em.Name4 END as nam,
+  
+  
+   Case 
+   when em.ModifiedDate3='NULL' THEN NULL
+   ELSE
+   cast(cast(em.ModifiedDate3 as timestamp(0) format 'hh:mi:sst' ) as time(0)) 
+   END
+   as dat  
+
+   FROM  
+   DP_STG.DP_STG_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

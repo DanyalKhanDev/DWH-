@@ -1,0 +1,29 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPhoneType;  
+
+   DELETE TABLE DP_LDR.DP_LDR_PhoneNumberType;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPhoneType 
+   INSERT INTO DP_LDR_PhoneNumberType   
+   SELECT DISTINCT
+   CASE When em.PhoneNumberTypeID2='NULL' OR em.PhoneNumberTypeID2='' THEN NULL 
+   ELSE
+   cast (em.PhoneNumberTypeID2 as INTEGER)
+   END,
+   CASE When em.Name1='NULL' OR em.Name1='' THEN NULL
+   ELSE
+   em.Name1
+   END
+   FROM  
+   DP_STG.DP_STG_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

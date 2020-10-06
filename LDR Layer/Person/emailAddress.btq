@@ -1,0 +1,25 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertEmail;  
+
+   DELETE TABLE DP_LDR.DP_LDR_EmailAddress;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertEmail 
+   INSERT INTO DP_LDR_EmailAddress   
+   SELECT DISTINCT
+   cast (em.BusinessEntityID2 as INTEGER),
+   cast (em.EmailAddressID as INTEGER),
+   em.EmailAddress
+   
+   FROM  
+   DP_STG.DP_STG_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 

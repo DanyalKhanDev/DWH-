@@ -1,0 +1,24 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Person 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertPhone;  
+
+   DELETE TABLE DP_LDR.DP_LDR_PersonPhone;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertPhone 
+   INSERT INTO DP_LDR_PersonPhone   
+   SELECT DISTINCT
+   cast (em.BusinessEntityID3 as INTEGER),
+   em.PhoneNumber,
+   cast (em.PhoneNumberTypeID1 as INTEGER)
+   FROM  
+   DP_STG.DP_STG_Person em;
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
