@@ -1,0 +1,81 @@
+.LOGON 192.168.215.128/dbc,dbc; 
+   DATABASE DP_LDR;
+
+  
+   SELECT * FROM  
+   DP_STG.DP_STG_Purchase 
+   Sample 1; 
+   .IF ACTIVITYCOUNT <> 0 THEN .GOTO InsertProductVendor;  
+
+   DELETE TABLE DP_LDR.DP_LDR_ProductVendor;
+  
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+ 
+   .LABEL InsertProductVendor 
+   INSERT INTO DP_LDR.DP_LDR_ProductVendor
+  SELECT distinct
+
+
+  Case When sh.BusinessEntityID2='NULL' OR sh.BusinessEntityID2='' THEN NULL 
+   ELSE
+   cast (sh.BusinessEntityID2 as INTEGER)
+   END as BID,
+
+   Case When sh.ProductID2='NULL' OR sh.ProductID2='' THEN NULL 
+   ELSE
+   cast (sh.ProductID2 as INTEGER)
+   END as PID,
+
+    Case When sh.AverageLeadTime='NULL' OR sh.AverageLeadTime='' THEN NULL 
+   ELSE
+   cast (sh.AverageLeadTime as INTEGER)
+   END as avgLT,
+
+     Case When sh.StandardPrice='NULL' OR sh.StandardPrice='' THEN NULL 
+   ELSE
+   cast (sh.StandardPrice as decimal(10,2))
+   END as Sprice,
+
+     Case When sh.LastReceiptCost='NULL' OR sh.LastReceiptCost='' THEN NULL 
+   ELSE
+   cast (sh.LastReceiptCost as decimal(10,2))
+   END as LRprice,
+
+   CASE 
+   when sh.LastReceiptDate='NULL' OR sh.LastReceiptDate='' THEN NULL
+   ELSE
+   to_timestamp(sh.LastReceiptDate,'MM/DD/YYYY HH24:MI:SS AM') END as LRD,
+   
+     Case When sh.MinOrderQty='NULL' OR sh.MinOrderQty='' THEN NULL 
+   ELSE
+   cast (sh.MinOrderQty as INTEGER)
+   END as minQty,
+
+     Case When sh.MaxOrderQty='NULL' OR sh.MaxOrderQty='' THEN NULL 
+   ELSE
+   cast (sh.MaxOrderQty as INTEGER)
+   END as maxQty,
+      Case When sh.OnOrderQty='NULL' OR sh.OnOrderQty='' THEN NULL 
+   ELSE
+   cast (sh.OnOrderQty as INTEGER)
+   END as onQty,
+
+  
+
+    Case When sh.UnitMeasureCode='NULL' OR sh.UnitMeasureCode='' THEN NULL 
+   ELSE
+    (sh.UnitMeasureCode )
+   END as UMC,
+
+
+   CASE 
+   when sh.ModifiedDate5='NULL' OR sh.ModifiedDate5='' THEN NULL
+   ELSE
+   to_timestamp(sh.ModifiedDate5,'MM/DD/YYYY HH24:MI:SS AM') END
+
+   FROM  
+   DP_STG.DP_STG_Purchase sh;
+  
+
+   .IF ERRORCODE <> 0 THEN .EXIT ERRORCODE; 
+.LOGOFF; 
